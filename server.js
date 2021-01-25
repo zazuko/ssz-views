@@ -1,0 +1,21 @@
+import express from 'express'
+import middleware from './index.js'
+
+const config = {
+  baseUrl: process.env.BASE_URL || 'http://localhost:8080/',
+  endpointUrl: process.env.ENDPOINT_URL || 'http://ld.zazuko.com/query',
+  port: parseInt(process.env.PORT || 8080),
+  viewPath: process.env.VIEW_PATH || 'views'
+}
+
+async function main () {
+  const app = express()
+
+  app.use((new URL(config.baseUrl)).pathname, await middleware(config))
+
+  app.listen(config.port, () => {
+    console.log(`listening at http://:${config.port}`)
+  })
+}
+
+main()
