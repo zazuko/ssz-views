@@ -4,6 +4,7 @@ import middleware from './index.js'
 const config = {
   baseUrl: process.env.BASE_URL || 'http://localhost:8080/',
   endpointUrl: process.env.ENDPOINT_URL || 'http://ld.zazuko.com/query',
+  viewEndpointUrl: process.env.VIEW_ENDPOINT_URL,
   port: parseInt(process.env.PORT || 8080),
   viewPath: process.env.VIEW_PATH || 'views'
 }
