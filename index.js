@@ -12,7 +12,9 @@ async function middleware (config) {
   if (config.viewEndpointUrl) {
     store = new SparqlStore({
       baseUrl: config.baseUrl,
-      endpointUrl: config.viewEndpointUrl
+      endpointUrl: config.viewEndpointUrl,
+      user: config.viewEndpointAuthentication.user,
+      password: config.viewEndpointAuthentication.password
     })
   } else {
     store = new FileStore({
@@ -21,7 +23,11 @@ async function middleware (config) {
     })
   }
 
-  const client = new SparqlClient({ endpointUrl: config.endpointUrl })
+  const client = new SparqlClient({
+    endpointUrl: config.endpointUrl,
+    user: config.endpointAuthentication.user,
+    password: config.endpointAuthentication.password
+  })
 
   const router = new express.Router()
 

@@ -6,7 +6,15 @@ import morgan from 'morgan'
 const config = {
   baseUrl: process.env.BASE_URL || 'http://localhost:8080/',
   endpointUrl: process.env.ENDPOINT_URL || 'http://ld.zazuko.com/query',
+  endpointAuthentication: {
+    user: process.env.ENDPOINT_USER,
+    password: process.env.ENDPOINT_PASSWORD
+  },
   viewEndpointUrl: process.env.VIEW_ENDPOINT_URL,
+  viewEndpointAuthentication: {
+    user: process.env.VIEW_ENDPOINT_USER,
+    password: process.env.VIEW_ENDPOINT_PASSWORD
+  },
   port: parseInt(process.env.PORT || 8080),
   viewPath: process.env.VIEW_PATH || 'views'
 }
