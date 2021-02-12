@@ -1,6 +1,4 @@
-import absoluteUrl from 'absolute-url'
 import express from 'express'
-import morgan from 'morgan'
 import rdfHandler from '@rdfjs/express-handler'
 import FileStore from './lib/FileStore.js'
 import SparqlStore from './lib/SparqlStore.js'
@@ -27,8 +25,6 @@ async function middleware (config) {
 
   const router = new express.Router()
 
-  router.use(morgan('combined'))
-  router.use(absoluteUrl())
   router.use(rdfHandler())
 
   router.get('/', fromStore({ store }))
