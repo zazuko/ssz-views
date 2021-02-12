@@ -15,6 +15,16 @@ The given base will be used as base URL for the views.
 It must match the URL that will be used for the server.
 `config.json` is the input file and `views` the output folder.
 
+### Generate Views to a Triplestore
+
+Generating the view triples into a triplestore is almost the same as into a file.
+The filename must be replaced by the SPARQL Graph Store URL of the target store.
+Additional you can give a target named graph and user + password, if required:
+
+```bash
+./bin/ssz-views.js generate2store --endpoint=http://ld.zazuko.com/query --base=http://localhost:8080/ config.json http://localhost:3030/ssz/data
+```
+
 ## View Server
 
 The view server hosts the generated views and runs them on the fly.
