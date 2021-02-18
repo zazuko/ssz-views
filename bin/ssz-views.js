@@ -17,7 +17,7 @@ async function generateDataset ({ config, datasetBuilder, index, output = '' }) 
   const dataset = await datasetBuilder.build(config.DataSetMetadaten)
 
   index
-    .addOut(ns.hydra.member, dataset)
+    .addOut(ns.schema.hasPart, dataset)
 
   return {
     dataset: dataset.dataset,
@@ -36,12 +36,7 @@ async function generatePublication ({ config, index, output = '', publication, v
   const dataset = view.ptr.dataset.filter(quad => quad.object.termType !== 'DefaultGraph')
 
   index
-    .addOut(ns.hydra.member, view.ptr)
-
-  // add types to index
-  index.node(view.ptr)
-    .addOut(ns.rdf.type, ns.view.View)
-    .addOut(ns.rdf.type, ns.cube.Cube)
+    .addOut(ns.schema.dataset, view.ptr)
 
   return {
     dataset,
@@ -49,14 +44,18 @@ async function generatePublication ({ config, index, output = '', publication, v
   }
 }
 
-async function toStore (dataset, { graph, storeUrl, user, password }) {
+async function toStore (dataset, { clear, graph, storeUrl, user, password }) {
   const client = new SparqlClient({ storeUrl, user, password })
 
   if (graph) {
     graph = rdf.namedNode(graph)
   }
 
-  client.store.post(rdf.dataset(dataset, graph).toStream())
+  if (clear) {
+    client.store.put(rdf.dataset(dataset, graph).toStream())
+  } else {
+    client.store.post(rdf.dataset(dataset, graph).toStream())
+  }
 }
 
 program
@@ -66,7 +65,8 @@ program
   .option('-u, --user [user]', 'user for SPARQL endpoint')
   .option('-p, --password [password]', 'password for SPARQL endpoint')
   .option('-b, --base [url]', 'base URL for the views')
-  .action(async (filename, output = process.cwd(), { base: baseUrl, endpoint: endpointUrl, graph: graphUrl, user, password }) => {
+  .option('-i, --index [url]', 'index URL where the views will be attached')
+  .action(async (filename, output = process.cwd(), { base: baseUrl, endpoint: endpointUrl, graph: graphUrl, index: indexUrl, user, password }) => {
     const datasetBuilder = new DatasetBuilder({ baseUrl })
     const viewBuilder = new ViewBuilder({ baseUrl, endpointUrl, graphUrl, user, password })
 
@@ -75,6 +75,10 @@ program
 
     if (baseUrl) {
       index = index.node(index.namedNode(baseUrl))
+    }
+
+    if (indexUrl) {
+      index = index.node(index.namedNode(indexUrl))
     }
 
     for (const config of configs) {
@@ -97,46 +101,66 @@ program
   .option('-u, --user [user]', 'user for SPARQL endpoint')
   .option('-p, --password [password]', 'password for SPARQL endpoint')
   .option('-b, --base [url]', 'base URL for the views')
+  .option('-i, --index [url]', 'index URL where the views will be attached')
   .option('--output-user [user]', 'user for SPARQL endpoint for output')
   .option('--output-password [password]', 'password for SPARQL endpoint for output')
   .option('--output-graph [graph]', 'graph for SPARQL endpoint for output')
-  .action(async (filename, outputUrl, { base: baseUrl, endpoint: endpointUrl, graph: graphUrl, user, password, outputUser, outputPassword, outputGraph }) => {
+  .option('--output-clear', 'clear existing triples in graph')
+  .action(async (filename, outputUrl, { base: baseUrl, endpoint: endpointUrl, graph: graphUrl, ndex: indexUrl, user, password, outputUser, outputPassword, outputGraph, outputClear }) => {
     const datasetBuilder = new DatasetBuilder({ baseUrl })
     const viewBuilder = new ViewBuilder({ baseUrl, endpointUrl, graphUrl, user, password })
 
     const configs = JSON.parse((await fs.readFile(filename)).toString())
+    const all = rdf.dataset()
     let index = clownface({ dataset: rdf.dataset(), term: rdf.blankNode() })
 
     if (baseUrl) {
       index = index.node(index.namedNode(baseUrl))
     }
 
+    if (indexUrl) {
+      index = index.node(index.namedNode(indexUrl))
+    }
+
     for (const config of configs) {
       const { dataset } = await generateDataset({ config, datasetBuilder, index })
-      await toStore(dataset, {
+
+      all.addAll(dataset)
+      /* await toStore(dataset, {
         storeUrl: outputUrl,
         user: outputUser,
         password: outputPassword,
         graph: outputGraph
-      })
+      }) */
 
       for (const publication of config['Veröffentlichung']) {
         const { dataset } = await generatePublication({ config, index, publication, viewBuilder })
-        await toStore(dataset, {
+
+        all.addAll(dataset)
+        /* await toStore(dataset, {
           storeUrl: outputUrl,
           user: outputUser,
           password: outputPassword,
           graph: outputGraph
-        })
+        }) */
       }
     }
 
-    await toStore(index.dataset, {
+    all.addAll(index.dataset)
+
+    await toStore(all, {
+      storeUrl: outputUrl,
+      user: outputUser,
+      password: outputPassword,
+      graph: outputGraph,
+      clear: outputClear
+    })
+    /* await toStore(index.dataset, {
       storeUrl: outputUrl,
       user: outputUser,
       password: outputPassword,
       graph: outputGraph
-    })
+    }) */
   })
 
 program.parse(process.argv)
