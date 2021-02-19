@@ -11,6 +11,21 @@ import ns from '../lib/namespaces.js'
 import DatasetBuilder from '../lib/builder/DatasetBuilder.js'
 import ViewBuilder from '../lib/builder/ViewBuilder.js'
 
+async function readConfig (filename) {
+  const raw = await fs.readFile(filename)
+  let content = raw.toString()
+
+  // TODO: workaround for bom header
+  if (content.charCodeAt(0) === 0xfeff) {
+    content = content.slice(1)
+  }
+
+  // TODO: workaround for invalid JSON ' -> "
+  content = content.replace(/'/g, '"')
+
+  return JSON.parse(content)
+}
+
 async function generateDataset ({ config, datasetBuilder, index, output = '' }) {
   const id = config.DataSetMetadaten.DataSetID
   const outputFilename = resolve(output, `${id}.nt`)
@@ -70,7 +85,7 @@ program
     const datasetBuilder = new DatasetBuilder({ baseUrl })
     const viewBuilder = new ViewBuilder({ baseUrl, endpointUrl, graphUrl, user, password })
 
-    const configs = JSON.parse((await fs.readFile(filename)).toString())
+    const configs = await readConfig(filename)
     let index = clownface({ dataset: rdf.dataset(), term: rdf.blankNode() })
 
     if (baseUrl) {
@@ -110,7 +125,7 @@ program
     const datasetBuilder = new DatasetBuilder({ baseUrl })
     const viewBuilder = new ViewBuilder({ baseUrl, endpointUrl, graphUrl, user, password })
 
-    const configs = JSON.parse((await fs.readFile(filename)).toString())
+    const configs = await readConfig(filename)
     const all = rdf.dataset()
     let index = clownface({ dataset: rdf.dataset(), term: rdf.blankNode() })
 
@@ -126,23 +141,11 @@ program
       const { dataset } = await generateDataset({ config, datasetBuilder, index })
 
       all.addAll(dataset)
-      /* await toStore(dataset, {
-        storeUrl: outputUrl,
-        user: outputUser,
-        password: outputPassword,
-        graph: outputGraph
-      }) */
 
       for (const publication of config['Veröffentlichung']) {
         const { dataset } = await generatePublication({ config, index, publication, viewBuilder })
 
         all.addAll(dataset)
-        /* await toStore(dataset, {
-          storeUrl: outputUrl,
-          user: outputUser,
-          password: outputPassword,
-          graph: outputGraph
-        }) */
       }
     }
 
@@ -155,12 +158,6 @@ program
       graph: outputGraph,
       clear: outputClear
     })
-    /* await toStore(index.dataset, {
-      storeUrl: outputUrl,
-      user: outputUser,
-      password: outputPassword,
-      graph: outputGraph
-    }) */
   })
 
 program.parse(process.argv)
