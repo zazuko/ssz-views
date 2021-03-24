@@ -121,7 +121,7 @@ program
   .option('--output-password [password]', 'password for SPARQL endpoint for output')
   .option('--output-graph [graph]', 'graph for SPARQL endpoint for output')
   .option('--output-clear', 'clear existing triples in graph')
-  .action(async (filename, outputUrl, { base: baseUrl, endpoint: endpointUrl, graph: graphUrl, ndex: indexUrl, user, password, outputUser, outputPassword, outputGraph, outputClear }) => {
+  .action(async (filename, outputUrl, { base: baseUrl, endpoint: endpointUrl, graph: graphUrl, index: indexUrl, user, password, outputUser, outputPassword, outputGraph, outputClear }) => {
     const datasetBuilder = new DatasetBuilder({ baseUrl })
     const viewBuilder = new ViewBuilder({ baseUrl, endpointUrl, graphUrl, user, password })
 
