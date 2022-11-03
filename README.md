@@ -38,6 +38,16 @@ The following URL patterns are used:
 
 ### Examples
 
+To run server locally, create a `.env.dev.local` file with values for environment to configure. For example:
+
+```
+BASE_URL=https://ld.stadt-zuerich.ch/statistics/view/
+ENDPOINT_URL=https://ld.integ.stadt-zuerich.ch/query
+VIEW_ENDPOINT_URL=https://ld.integ.stadt-zuerich.ch/query
+```
+
+Then, execute `npm start` to run the server.
+
 The following `curl` request will fetch the view `V000001` as CSV and store it in `test.csv`:
 
 ```bash
