@@ -4,8 +4,8 @@ import middleware from './index.js'
 import morgan from 'morgan'
 
 const config = {
-  baseUrl: process.env.BASE_URL || 'http://localhost:8080/',
-  endpointUrl: process.env.ENDPOINT_URL || 'http://ld.zazuko.com/query',
+  baseUrl: process.env.BASE_URL,
+  endpointUrl: process.env.ENDPOINT_URL,
   endpointAuthentication: {
     user: process.env.ENDPOINT_USER,
     password: process.env.ENDPOINT_PASSWORD
@@ -22,6 +22,7 @@ const config = {
 async function main () {
   const app = express()
 
+  app.set('trust proxy', true)
   app.use(morgan('combined'))
   app.use(absoluteUrl())
   app.use((new URL(config.baseUrl)).pathname, await middleware(config))
