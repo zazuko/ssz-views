@@ -1,6 +1,6 @@
 {
-  "name": "ssz-views",
-  "version": "0.1.4",
+  "name": "@zazuko/ssz-views",
+  "version": "0.2.0",
   "description": "SSZ Views",
   "type": "module",
   "main": "index.js",
