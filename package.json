@@ -7,7 +7,8 @@
   "scripts": {
     "test": "standard",
     "start": "dotenv -c dev -- npm run serve",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "release": "changeset publish"
   },
   "author": "Thomas Bergwinkl <bergi@axolotlfarm.org> (https://www.bergnet.org/people/bergi/card#me)",
   "license": "MIT",
@@ -34,7 +35,8 @@
     "sparql-http-client": "^2.2.2"
   },
   "devDependencies": {
-    "standard": "^16.0.3",
-    "dotenv-cli": "^6.0.0"
+    "@changesets/cli": "^2.26.0",
+    "dotenv-cli": "^6.0.0",
+    "standard": "^16.0.3"
   }
 }
