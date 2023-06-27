@@ -22,7 +22,7 @@
   "homepage": "https://github.com/zazuko/ssz-views",
   "dependencies": {
     "@rdfjs/express-handler": "^1.2.2",
-    "@rdfjs/namespace": "^2",
+    "@rdfjs/namespace": "^2.0.0",
     "absolute-url": "^1.2.2",
     "clownface": "^1.2.0",
     "commander": "^7.0.0",
@@ -30,9 +30,9 @@
     "line-stream": "^1.0.0",
     "morgan": "^1.10.0",
     "rdf-cube-view-query": "^1.11.2",
-    "rdf-ext": "^2",
+    "rdf-ext": "^2.2.0",
     "rdf-utils-fs": "^2.1.0",
-    "readable-stream": "^4.4.0",
+    "readable-stream": ">=3.6.0",
     "sparql-http-client": "^2.2.2"
   },
   "devDependencies": {
