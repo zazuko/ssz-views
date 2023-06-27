@@ -27,6 +27,7 @@
     "clownface": "^1.2.0",
     "commander": "^7.0.0",
     "express": "^4.18.2",
+    "line-stream": "^1.0.0",
     "morgan": "^1.10.0",
     "rdf-cube-view-query": "^1.11.2",
     "rdf-ext": "^2.2.0",
