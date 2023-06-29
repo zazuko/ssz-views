@@ -1,5 +1,11 @@
 # @zazuko/ssz-views
 
+## 0.2.4
+
+### Patch Changes
+
+- 7e80f04: Missing new line after header
+
 ## 0.2.3
 
 ### Patch Changes
