@@ -1,5 +1,11 @@
 # @zazuko/ssz-views
 
+## 0.2.5
+
+### Patch Changes
+
+- 3e50e89: Order of CSV columns did not match data rows
+
 ## 0.2.4
 
 ### Patch Changes
