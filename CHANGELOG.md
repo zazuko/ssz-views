@@ -1,5 +1,11 @@
 # @zazuko/ssz-views
 
+## 0.2.6
+
+### Patch Changes
+
+- 1488ee3: Fix regression in fetching view quads (caused by CSV hear fix)
+
 ## 0.2.5
 
 ### Patch Changes
